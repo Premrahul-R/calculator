@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scientific Calculator</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e1e;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .calculator {
+      z-index: 1;
+      background: rgba(44, 44, 44, 0.95);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      width: 400px;
+    }
+
+    .display {
+      background: #000;
+      color: #0f0;
+      font-size: 2em;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: right;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      font-size: 1.1em;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #444;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #666;
+    }
+
+    .operator { background: #555; }
+    .function { background: #3a3a3a; color: #0af; }
+    .equal { background: #0a0; color: white; }
+    .clear { background: #a00; color: white; }
+  </style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="calculator">
+  <div id="display" class="display">0</div>
+  <div class="buttons">
+    <button class="function" onclick="append('Math.sin(')">sin</button>
+    <button class="function" onclick="append('Math.cos(')">cos</button>
+    <button class="function" onclick="append('Math.tan(')">tan</button>
+    <button class="function" onclick="append('Math.log10(')">log</button>
+    <button class="function" onclick="append('Math.sqrt(')">√</button>
+
+    <button class="function" onclick="append('Math.pow(')">xʸ</button>
+    <button class="function" onclick="append('Math.PI')">π</button>
+    <button class="function" onclick="append('Math.E')">e</button>
+    <button class="clear" onclick="clearDisplay()">C</button>
+    <button class="operator" onclick="append('/')">÷</button>
+
+    <button onclick="append('7')">7</button>
+    <button onclick="append('8')">8</button>
+    <button onclick="append('9')">9</button>
+    <button class="operator" onclick="append('*')">×</button>
+    <button class="operator" onclick="append('-')">−</button>
+
+    <button onclick="append('4')">4</button>
+    <button onclick="append('5')">5</button>
+    <button onclick="append('6')">6</button>
+    <button class="operator" onclick="append('+')">+</button>
+    <button class="equal" onclick="calculate()">=</button>
+
+    <button onclick="append('1')">1</button>
+    <button onclick="append('2')">2</button>
+    <button onclick="append('3')">3</button>
+    <button onclick="append('0')">0</button>
+    <button onclick="append('.')">.</button>
+  </div>
+</div>
+
+<script>
+  const display = document.getElementById('display');
+  let expression = '';
+
+  function append(value) {
+    expression += value;
+    display.textContent = expression;
+  }
+
+  function clearDisplay() {
+    expression = '';
+    display.textContent = '0';
+  }
+
+  function calculate() {
+    try {
+      const result = eval(expression);
+      display.textContent = result;
+      expression = result.toString();
+    } catch (e) {
+      display.textContent = 'Error';
+      expression = '';
+    }
+  }
+
+  // Background canvas animation
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let columns = Math.floor(canvas.width / 20);
+  let drops = Array(columns).fill(0);
+
+  function drawMatrix() {
+    ctx.fillStyle = 'rgba(30, 30, 30, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#0f0';
+    ctx.font = '16px monospace';
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = Math.floor(Math.random() * 10).toString();
+      ctx.fillText(text, i * 20, drops[i] * 20);
+
+      if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  setInterval(drawMatrix, 50);
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    columns = Math.floor(canvas.width / 20);
+    drops = Array(columns).fill(0);
+  });
+</script>
+</body>
+</html>
