@@ -1,73 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Scientific Calculator</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #1e1e1e;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #1e1e1e; /* dark gray/black */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
 
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 0;
-    }
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
 
-    .calculator {
-      z-index: 1;
-      background: rgba(44, 44, 44, 0.95);
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-      width: 400px;
-    }
+  .calculator {
+    z-index: 1;
+    background: rgba(44, 44, 44, 0.95); /* dark gray, slightly transparent */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    width: 90%;
+    max-width: 400px;
+    min-width: 280px;
+    box-sizing: border-box;
+  }
 
-    .display {
-      background: #000;
-      color: #0f0;
-      font-size: 2em;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: right;
-      margin-bottom: 20px;
-      overflow-x: auto;
-    }
+  .display {
+    background: #000; /* pure black */
+    color: #0f0; /* bright green */
+    font-size: 2em;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: right;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    word-wrap: break-word;
+  }
 
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-    }
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
 
-    button {
-      font-size: 1.1em;
-      padding: 15px;
-      border: none;
-      border-radius: 8px;
-      background: #444;
-      color: white;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+  button {
+    font-size: 1.2em;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #444; /* dark gray */
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
 
-    button:hover {
-      background: #666;
-    }
+  button:hover {
+    background: #666;
+    box-shadow: 0 0 10px #0f0;
+  }
 
-    .operator { background: #555; }
-    .function { background: #3a3a3a; color: #0af; }
-    .equal { background: #0a0; color: white; }
-    .clear { background: #a00; color: white; }
-  </style>
+  .operator { background: #555; }
+  .function { background: #3a3a3a; color: #0af; }
+  .equal { background: #0a0; color: #fff; }
+  .clear { background: #a00; color: #fff; }
+
+  @media (max-width: 480px) {
+    .display { font-size: 1.5em; padding: 10px; }
+    button { font-size: 1em; padding: 12px; }
+  }
+</style>
 </head>
 <body>
 
@@ -76,35 +87,30 @@
 <div class="calculator">
   <div id="display" class="display">0</div>
   <div class="buttons">
-    <button class="function" onclick="append('Math.sin(')">sin</button>
-    <button class="function" onclick="append('Math.cos(')">cos</button>
-    <button class="function" onclick="append('Math.tan(')">tan</button>
-    <button class="function" onclick="append('Math.log10(')">log</button>
-    <button class="function" onclick="append('Math.sqrt(')">√</button>
-
-    <button class="function" onclick="append('Math.pow(')">xʸ</button>
-    <button class="function" onclick="append('Math.PI')">π</button>
-    <button class="function" onclick="append('Math.E')">e</button>
     <button class="clear" onclick="clearDisplay()">C</button>
+    <button class="function" onclick="append('%')">%</button>
+    <button class="function" onclick="backspace()">⌫</button>
     <button class="operator" onclick="append('/')">÷</button>
 
     <button onclick="append('7')">7</button>
     <button onclick="append('8')">8</button>
     <button onclick="append('9')">9</button>
-    <button class="operator" onclick="append('*')">×</button>
-    <button class="operator" onclick="append('-')">−</button>
+    <button class="operator" onclick="append('*')">*</button>
 
     <button onclick="append('4')">4</button>
     <button onclick="append('5')">5</button>
     <button onclick="append('6')">6</button>
-    <button class="operator" onclick="append('+')">+</button>
-    <button class="equal" onclick="calculate()">=</button>
+    <button class="operator" onclick="append('-')">−</button>
 
     <button onclick="append('1')">1</button>
     <button onclick="append('2')">2</button>
     <button onclick="append('3')">3</button>
+    <button class="operator" onclick="append('+')">+</button>
+
+    <button onclick="append('00')">00</button>
     <button onclick="append('0')">0</button>
     <button onclick="append('.')">.</button>
+    <button class="equal" onclick="calculate()">=</button>
   </div>
 </div>
 
@@ -113,6 +119,8 @@
   let expression = '';
 
   function append(value) {
+    const parts = expression.split(/[\+\-\*\/%]/);
+    if (value === '.' && parts[parts.length - 1].includes('.')) return;
     expression += value;
     display.textContent = expression;
   }
@@ -122,10 +130,16 @@
     display.textContent = '0';
   }
 
+  function backspace() {
+    expression = expression.slice(0, -1);
+    display.textContent = expression || '0';
+  }
+
   function calculate() {
     try {
-      const result = eval(expression);
-      display.textContent = result;
+      let result = eval(expression);
+      if (!isFinite(result)) display.textContent = 'Infinity';
+      else display.textContent = Number(result).toLocaleString('en-US');
       expression = result.toString();
     } catch (e) {
       display.textContent = 'Error';
@@ -133,42 +147,45 @@
     }
   }
 
-  // Background canvas animation
+  document.addEventListener('keydown', (e) => {
+    if (/\d/.test(e.key) || ['+', '-', '*', '/', '%'].includes(e.key)) append(e.key);
+    else if (e.key === '.') append('.');
+    else if (e.key === 'Enter') calculate();
+    else if (e.key === 'Backspace') backspace();
+    else if (e.key.toLowerCase() === 'c') clearDisplay();
+  });
+
+  // Matrix-style green background animation
   const canvas = document.getElementById('bgCanvas');
   const ctx = canvas.getContext('2d');
+  let columns, drops;
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    columns = Math.floor(canvas.width / 20);
+    drops = Array(columns).fill(0);
+  }
 
-  let columns = Math.floor(canvas.width / 20);
-  let drops = Array(columns).fill(0);
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
 
   function drawMatrix() {
-    ctx.fillStyle = 'rgba(30, 30, 30, 0.1)';
+    ctx.fillStyle = 'rgba(30,30,30,0.1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = '#0f0';
     ctx.font = '16px monospace';
 
     for (let i = 0; i < drops.length; i++) {
-      const text = Math.floor(Math.random() * 10).toString();
-      ctx.fillText(text, i * 20, drops[i] * 20);
-
-      if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
+      const num = Math.floor(Math.random() * 10).toString();
+      ctx.fillText(num, i * 20, drops[i] * 20);
       drops[i]++;
+      if (drops[i] * 20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
     }
   }
 
   setInterval(drawMatrix, 50);
-
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    columns = Math.floor(canvas.width / 20);
-    drops = Array(columns).fill(0);
-  });
 </script>
 </body>
 </html>
